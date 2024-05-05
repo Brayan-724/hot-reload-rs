@@ -1,0 +1,17 @@
+[workspace] 
+members = [
+  "example"
+]
+
+[package]
+name = "cargo-hot"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = [ "enable" ]
+enable = [ "dep:libloading" ]
+
+[dependencies]
+libloading = { version = "0.8.3", optional = true }
+signal-hook = "0.3.17"
