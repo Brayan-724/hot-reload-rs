@@ -130,7 +130,12 @@ fn lib_init() -> State {
 
 fn lib_main((mut terminal, mut app): State, rx: mpmc::Receiver<()>) -> State {
     enable_raw_mode().unwrap();
-    execute!(terminal.backend_mut(), EnterAlternateScreen, EnableMouseCapture).unwrap();
+    execute!(
+        terminal.backend_mut(),
+        EnterAlternateScreen,
+        EnableMouseCapture
+    )
+    .unwrap();
 
     loop {
         cargo_hot::thread::select_ended!(&rx; return (terminal, app));
@@ -174,7 +179,7 @@ fn lib_main((mut terminal, mut app): State, rx: mpmc::Receiver<()>) -> State {
 }
 
 fn lib_post_main((mut terminal, app): State) -> State {
-    terminal.clear().unwrap(); 
+    terminal.clear().unwrap();
     disable_raw_mode().unwrap();
     execute!(
         terminal.backend_mut(),

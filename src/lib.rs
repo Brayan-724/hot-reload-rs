@@ -18,6 +18,11 @@ macro_rules! hot_lib {
         $(drop => $hot_drop:ident;)?
     ) => {
         #[no_mangle]
+        pub fn hot_state_size() -> usize {
+            ::core::mem::size_of::<$state>()
+        }
+
+        #[no_mangle]
         pub fn hot_init() -> Box<dyn ::std::any::Any> {
             // macro type-safety
             let state: $state = $hot_init();

@@ -167,22 +167,26 @@ fn load_lib(lib_path: OsString) -> Result<libloading::Library, libloading::Error
 }
 
 fn build(src_path: &'static str) -> bool {
+    let mut cmd = Command::new(env!("CARGO"));
+    cmd.args(["build", "--lib", "--features", "hot"]);
+    cmd.current_dir(src_path);
+
     println!("\x1b[2m------------------\x1b[0m");
     print!("\x1b[1J\x1b[1;1H");
-    _ = std::io::stdout().flush();
     println!("\x1b[2m[HOT] Rebuilding {src_path:?}\x1b[0m");
-    let mut cmd = Command::new(env!("CARGO"))
-        .args(["build", "--lib", "--features", "hot"])
-        .current_dir(src_path)
-        .spawn()
-        .expect("Cannot execute build for package");
+    _ = std::io::stdout().flush();
+
+
+    let mut cmd = cmd.spawn().expect("Cannot execute build for package");
 
     let exit = cmd.wait().expect("Waiting for build");
     if !exit.success() {
         eprintln!("[HOT] Error building. Cancelling reload");
         return false;
     }
+
     _ = std::io::stdout().flush();
+
     println!("\x1b[2m------------------\x1b[0m");
     print!("\x1b[1J\x1b[1;1H");
     _ = std::io::stdout().flush();
